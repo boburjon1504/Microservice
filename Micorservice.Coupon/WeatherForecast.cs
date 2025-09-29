@@ -1,4 +1,4 @@
-namespace Micorservice.Coupon
+namespace Micorservice.CouponApi
 {
     public class WeatherForecast
     {

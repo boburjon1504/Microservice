@@ -1,6 +1,7 @@
+using Micorservice.CouponApi;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Micorservice.Coupon.Controllers
+namespace Micorservice.CouponApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]

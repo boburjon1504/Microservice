@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{55876BCC-CD00-4E7B-AA55-432D9491122F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Micorservice.Coupon", "Micorservice.Coupon\Micorservice.Coupon.csproj", "{944B3758-41FD-43A1-A84B-9C444647AA5C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Micorservice.CouponApi", "Micorservice.Coupon\Micorservice.CouponApi.csproj", "{944B3758-41FD-43A1-A84B-9C444647AA5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
