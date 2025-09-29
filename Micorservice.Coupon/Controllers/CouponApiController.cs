@@ -1,5 +1,6 @@
 ﻿using Micorservice.CouponApi.Data;
 using Micorservice.CouponApi.Models;
+using Micorservice.CouponApi.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,19 +11,27 @@ namespace Micorservice.CouponApi.Controllers;
 public class CouponApiController(AppDbContext dbContext) : ControllerBase
 {
     [HttpGet()]
-    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+    public async Task<ResponseDto<IEnumerable<Coupon>>> GetAll(CancellationToken cancellationToken)
     {
         IEnumerable<Coupon> coupons = await dbContext.Coupons.ToListAsync(cancellationToken);
 
-        return Ok(coupons);
+        var response = new ResponseDto<IEnumerable<Coupon>>();
+
+        response.Result = coupons;
+
+        return response;
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
+    public async Task<ResponseDto<Coupon>> GetById(int id, CancellationToken cancellationToken)
     {
         Coupon? coupon = await dbContext.Coupons
                                 .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
 
-        return Ok(coupon);
+        var response = new ResponseDto<Coupon>();
+
+        response.Result = coupon;
+
+        return response;
     }
 }

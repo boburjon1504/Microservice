@@ -2,9 +2,9 @@
 
 public class ResponseDto<TData>
 {
-    public TData? Resule { get; set; }
+    public TData? Result { get; set; }
 
-    public bool IsSuccess { get; set; }
+    public bool IsSuccess => Result is not null;
 
     public string? Message { get; set; }
 }
