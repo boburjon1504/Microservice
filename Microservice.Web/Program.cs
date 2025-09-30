@@ -1,6 +1,20 @@
+using Microservice.Web.Services;
+using Microservice.Web.Services.Interfaces;
+using Microservice.Web.Utility;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+SD.CouponApiBase = builder.Configuration["SeviceUrls:CouponApi"];
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient();
+
+builder.Services.AddHttpClient<ICouponService, CouponService>();
+
+builder.Services.AddScoped<IBaseService, BaseService>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
