@@ -37,4 +37,31 @@ public class CouponController(ICouponService couponService) : Controller
 
         return View(model);
     }
+
+    public async Task<IActionResult> CouponDelete(int couponId)
+    {
+        ResponseDto? response = await couponService.GetByIdAsync(couponId);
+
+        if(response is not null && response.IsSuccess)
+        {
+            CouponDto? model = JsonSerializer.Deserialize<CouponDto>(Convert.ToString(response.Result), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            return View(model);
+        }
+
+        return NotFound();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CouponDelete(CouponDto couponDto)
+    {
+        ResponseDto? response = await couponService.DeleteAsync(couponDto.Id);
+
+        if (response is not null && response.IsSuccess)
+        {
+            return RedirectToAction(nameof(CouponIndex));
+        }
+
+        return View(couponDto);
+    }
 }

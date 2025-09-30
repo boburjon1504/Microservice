@@ -76,7 +76,7 @@ public class BaseService(IHttpClientFactory httpClientFactory) : IBaseService
 
     private static void SetDataToRequest(RequestDto requestDto, HttpRequestMessage message)
     {
-        if (requestDto.Data is not null)
+        if (requestDto.Data is not null && !string.IsNullOrWhiteSpace(Convert.ToString(requestDto.Data)))
         {
             message.Content = new StringContent(JsonSerializer.Serialize(requestDto.Data), Encoding.UTF8, "application/json");
         }

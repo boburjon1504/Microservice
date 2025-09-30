@@ -82,7 +82,7 @@ public class CouponApiController(AppDbContext dbContext, IMapper mapper)
         return response;
     }
 
-    [HttpDelete]
+    [HttpDelete("{id:int}")]
     public async Task<ResponseDto> Delete(int id, CancellationToken cancellationToken)
     {
         Coupon? coupon = await dbContext.Coupons.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
@@ -96,6 +96,7 @@ public class CouponApiController(AppDbContext dbContext, IMapper mapper)
         await dbContext.SaveChangesAsync(cancellationToken);
 
         response.Result = mapper.Map<CouponDto>(coupon);
+        response.IsSuccess = true;
 
         return response;
     }
