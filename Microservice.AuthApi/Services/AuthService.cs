@@ -48,10 +48,11 @@ public class AuthService(
             Name = user.Name,
         };
 
+        var roles = await userManager.GetRolesAsync(user);
         LoginResponseDto loginResponse = new LoginResponseDto
         {
             User = userDto,
-            Token = jwtTokenGenerator.GenerateToken(user)
+            Token = jwtTokenGenerator.GenerateToken(user, roles)
         };
 
         return loginResponse;

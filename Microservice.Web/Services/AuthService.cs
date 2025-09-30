@@ -12,7 +12,7 @@ public class AuthService(IBaseService baseService) : IAuthService
         return await baseService.SendAsync(new RequestDto
         {
             ApiType = ApiType.POST,
-            Url = SD.AuthApiBase + "api/auth/login",
+            Url = SD.AuthApiBase + "api/auth/assignrole",
             Data = registrationRequestDto
         });
     }
