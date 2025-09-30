@@ -1,5 +1,8 @@
 using Micorservice.CouponApi.Data;
+using Micorservice.CouponApi.Mappers;
+using Micorservice.CouponApi.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
         .AddDbContext<AppDbContext>(option => 
         option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddAutoMapper(c => c.AddProfile<CouponProfile>());
 
 builder.Services.AddControllers();
 
