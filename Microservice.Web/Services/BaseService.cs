@@ -13,13 +13,13 @@ public class BaseService(IHttpClientFactory httpClientFactory) : IBaseService
 {
     public async Task<ResponseDto?> SendAsync(RequestDto requestDto)
     {
-        HttpClient client = httpClientFactory.CreateClient("MicroserviceApi");
+        HttpClient client = httpClientFactory.CreateClient("CouponApi");
 
         HttpRequestMessage message = new();
 
         message.Headers.Add("Accept", "application/json");
 
-        message.RequestUri = new Uri(requestDto.Url);
+        message.RequestUri = new Uri(client.BaseAddress + requestDto.Url);
         SetDataToRequest(requestDto, message);
         SetHttpRequestType(requestDto, message);
 
@@ -39,7 +39,7 @@ public class BaseService(IHttpClientFactory httpClientFactory) : IBaseService
                     return new() { IsSuccess = false, Message = "Unauthorized" };
                 default:
                     var apiContent = await apiResponse.Content.ReadAsStringAsync();
-                    var apiResponseDto = JsonSerializer.Deserialize<ResponseDto>(apiContent);
+                    var apiResponseDto = JsonSerializer.Deserialize<ResponseDto>(apiContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true});
                     return apiResponseDto;
             }
         }

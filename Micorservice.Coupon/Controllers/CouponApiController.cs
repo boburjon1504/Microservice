@@ -12,25 +12,26 @@ namespace Micorservice.CouponApi.Controllers;
 public class CouponApiController(AppDbContext dbContext, IMapper mapper)
     : ControllerBase
 {
+    private ResponseDto response = new ResponseDto();
     [HttpGet()]
-    public async Task<ResponseDto<IEnumerable<CouponDto>>> GetAll(CancellationToken cancellationToken)
+    public async Task<ResponseDto> GetAll(CancellationToken cancellationToken)
     {
         IEnumerable<Coupon> coupons = await dbContext.Coupons.ToListAsync(cancellationToken);
 
-        var response = new ResponseDto<IEnumerable<CouponDto>>();
 
         response.Result = mapper.Map<IEnumerable<CouponDto>>(coupons);
+        response.IsSuccess = true;
 
         return response;
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ResponseDto<CouponDto>> GetById(int id, CancellationToken cancellationToken)
+    public async Task<ResponseDto> GetById(int id, CancellationToken cancellationToken)
     {
         Coupon? coupon = await dbContext.Coupons
                                 .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
 
-        var response = new ResponseDto<CouponDto>();
+        response.IsSuccess = coupon is not null;
 
         response.Result = mapper.Map<CouponDto>(coupon);
 
@@ -38,20 +39,19 @@ public class CouponApiController(AppDbContext dbContext, IMapper mapper)
     }
 
     [HttpGet("getmycode/{code}")]
-    public async Task<ResponseDto<CouponDto>> GetByCode(string code, CancellationToken cancellationToken)
+    public async Task<ResponseDto> GetByCode(string code, CancellationToken cancellationToken)
     {
         Coupon? coupon = await dbContext.Coupons
                                 .FirstOrDefaultAsync(c => c.CouponCode == code, cancellationToken);
 
-        var response = new ResponseDto<CouponDto>();
-
+        response.IsSuccess = coupon is not null;
         response.Result = mapper.Map<CouponDto>(coupon);
 
         return response;
     }
 
     [HttpPost]
-    public async Task<ResponseDto<CouponDto>> Create([FromBody] CouponDto model, CancellationToken cancellationToken)
+    public async Task<ResponseDto> Create([FromBody] CouponDto model, CancellationToken cancellationToken)
     {
         Coupon coupon = mapper.Map<Coupon>(model);
 
@@ -59,15 +59,13 @@ public class CouponApiController(AppDbContext dbContext, IMapper mapper)
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        var response = new ResponseDto<CouponDto>();
-
         response.Result = mapper.Map<CouponDto>(coupon);
 
         return response;
     }
 
     [HttpPut]
-    public async Task<ResponseDto<CouponDto>> Update([FromBody] CouponDto model, CancellationToken cancellationToken)
+    public async Task<ResponseDto> Update([FromBody] CouponDto model, CancellationToken cancellationToken)
     {
         Coupon coupon = mapper.Map<Coupon>(model);
 
@@ -75,27 +73,24 @@ public class CouponApiController(AppDbContext dbContext, IMapper mapper)
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        var response = new ResponseDto<CouponDto>();
-
         response.Result = mapper.Map<CouponDto>(coupon);
 
         return response;
     }
 
     [HttpDelete]
-    public async Task<ResponseDto<CouponDto>> Delete(int id, CancellationToken cancellationToken)
+    public async Task<ResponseDto> Delete(int id, CancellationToken cancellationToken)
     {
         Coupon? coupon = await dbContext.Coupons.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
 
         if (coupon is null)
-            return new ResponseDto<CouponDto>();
+            return new ResponseDto { IsSuccess = false };
 
 
         dbContext.Coupons.Remove(coupon);
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        var response = new ResponseDto<CouponDto>();
         response.Result = mapper.Map<CouponDto>(coupon);
 
         return response;

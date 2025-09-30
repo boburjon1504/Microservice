@@ -30,7 +30,7 @@ public class CouponService(IBaseService baseService) : ICouponService
         return await baseService.SendAsync(new RequestDto
         {
             ApiType = ApiType.GET,
-            Url = "/api/coupon"
+            Url = "api/couponapi"
         });
     }
 

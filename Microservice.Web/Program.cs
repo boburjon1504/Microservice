@@ -6,12 +6,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-SD.CouponApiBase = builder.Configuration["SeviceUrls:CouponApi"];
+SD.CouponApiBase = builder.Configuration["ServiceUrls:CouponApi"];
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("CouponApi", (sp, client) =>
+{
+    client.BaseAddress = new Uri(SD.CouponApiBase);
+});
 
-builder.Services.AddHttpClient<ICouponService, CouponService>();
+builder.Services.AddScoped<ICouponService, CouponService>();
 
 builder.Services.AddScoped<IBaseService, BaseService>();
 

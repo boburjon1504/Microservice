@@ -1,10 +1,10 @@
 ﻿namespace Micorservice.CouponApi.Models.Dto;
 
-public class ResponseDto<TData>
+public class ResponseDto
 {
-    public TData? Result { get; set; }
+    public object? Result { get; set; }
 
-    public bool IsSuccess => Result is not null;
+    public bool IsSuccess { get; set; }
 
     public string? Message { get; set; }
 }
