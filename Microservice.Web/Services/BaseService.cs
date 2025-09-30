@@ -13,7 +13,7 @@ public class BaseService(IHttpClientFactory httpClientFactory) : IBaseService
 {
     public async Task<ResponseDto?> SendAsync(RequestDto requestDto)
     {
-        HttpClient client = httpClientFactory.CreateClient("CouponApi");
+        HttpClient client = httpClientFactory.CreateClient();
 
         HttpRequestMessage message = new();
 
