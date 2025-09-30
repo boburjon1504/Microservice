@@ -9,13 +9,33 @@ namespace Microservice.AuthApi.Services;
 public class AuthService(
     AppDbContext dbContext,
     UserManager<ApplicationUser> userManager,
-    RoleManager<IdentityRole> roleManager) : IAuthService
+    RoleManager<IdentityRole> roleManager,
+    IJwtTokenGenerator jwtTokenGenerator) : IAuthService
 {
+    public async Task<bool> AssignRoleAsync(string email, string roleName)
+    {
+        var user = dbContext.ApplicationUsers.FirstOrDefault(u => u.Email == email);
+
+        if (user is not null)
+        {
+            if (!await roleManager.RoleExistsAsync(roleName))
+            {
+                await roleManager.CreateAsync(new IdentityRole { Name =  roleName });
+            }
+
+            await userManager.AddToRoleAsync(user, roleName);
+
+            return true;
+        }
+
+        return false;
+    }
+
     public async Task<LoginResponseDto> LoginAsync(LoginRequestDto loginRequestDto)
     {
         var user = dbContext.ApplicationUsers.FirstOrDefault(u => u.UserName == loginRequestDto.Username);
 
-        if(user is null || !await userManager.CheckPasswordAsync(user, loginRequestDto.Password))
+        if (user is null || !await userManager.CheckPasswordAsync(user, loginRequestDto.Password))
         {
             return new LoginResponseDto { User = null, Token = "" };
         }
@@ -31,7 +51,7 @@ public class AuthService(
         LoginResponseDto loginResponse = new LoginResponseDto
         {
             User = userDto,
-            Token = ""
+            Token = jwtTokenGenerator.GenerateToken(user)
         };
 
         return loginResponse;

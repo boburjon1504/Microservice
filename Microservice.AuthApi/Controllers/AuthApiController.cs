@@ -38,5 +38,22 @@ namespace Microservice.AuthApi.Controllers
 
             return Ok(responseDto);
         }
+
+        [HttpPost("assignrole")]
+        public async Task<IActionResult> AssignRole([FromBody] RegistrationRequestDto model)
+        {
+            var assignRoleSuccessfull = await authService.AssignRoleAsync(model.Email, model.Role.ToUpper());
+
+            if (!assignRoleSuccessfull)
+            {
+                responseDto.IsSuccess = false;
+                responseDto.Message = "Error encountered";
+
+                return BadRequest(responseDto);
+            }
+            responseDto.IsSuccess = true;
+
+            return Ok(responseDto);
+        }
     }
 }
