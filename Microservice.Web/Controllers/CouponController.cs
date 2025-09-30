@@ -12,11 +12,29 @@ public class CouponController(ICouponService couponService) : Controller
         List<CouponDto>? list = new();
 
         ResponseDto? response = await couponService.GetAllCouponsAsync();
-        
-        if(response is not null && response.IsSuccess)
+
+        if (response is not null && response.IsSuccess)
         {
-            list = JsonSerializer.Deserialize<List<CouponDto>>(Convert.ToString(response.Result), new JsonSerializerOptions { PropertyNameCaseInsensitive = true});
+            list = JsonSerializer.Deserialize<List<CouponDto>>(Convert.ToString(response.Result), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
         return View(list);
+    }
+
+    public async Task<IActionResult> CouponCreate()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CouponCreate(CouponDto model)
+    {
+        if (ModelState.IsValid)
+        {
+            ResponseDto? response = await couponService.CreateAsync(model);
+
+            return RedirectToAction(nameof(CouponIndex));
+        }
+
+        return View(model);
     }
 }

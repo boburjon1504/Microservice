@@ -4,10 +4,11 @@ using Micorservice.CouponApi.Models;
 using Micorservice.CouponApi.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design.Serialization;
 
 namespace Micorservice.CouponApi.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/coupon")]
 [ApiController]
 public class CouponApiController(AppDbContext dbContext, IMapper mapper)
     : ControllerBase
@@ -59,6 +60,7 @@ public class CouponApiController(AppDbContext dbContext, IMapper mapper)
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
+        response.IsSuccess = true;
         response.Result = mapper.Map<CouponDto>(coupon);
 
         return response;
@@ -74,6 +76,8 @@ public class CouponApiController(AppDbContext dbContext, IMapper mapper)
         await dbContext.SaveChangesAsync(cancellationToken);
 
         response.Result = mapper.Map<CouponDto>(coupon);
+        response.IsSuccess = true;
+
 
         return response;
     }
