@@ -53,6 +53,7 @@ public class CouponApiController(AppDbContext dbContext, IMapper mapper)
     }
 
     [HttpPost]
+    [Authorize(Roles = "ADMIN")]
     public async Task<ResponseDto> Create([FromBody] CouponDto model, CancellationToken cancellationToken)
     {
         Coupon coupon = mapper.Map<Coupon>(model);
@@ -68,6 +69,7 @@ public class CouponApiController(AppDbContext dbContext, IMapper mapper)
     }
 
     [HttpPut]
+    [Authorize(Roles = "ADMIN")]
     public async Task<ResponseDto> Update([FromBody] CouponDto model, CancellationToken cancellationToken)
     {
         Coupon coupon = mapper.Map<Coupon>(model);
@@ -83,7 +85,9 @@ public class CouponApiController(AppDbContext dbContext, IMapper mapper)
         return response;
     }
 
+    
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "ADMIN")]
     public async Task<ResponseDto> Delete(int id, CancellationToken cancellationToken)
     {
         Coupon? coupon = await dbContext.Coupons.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);

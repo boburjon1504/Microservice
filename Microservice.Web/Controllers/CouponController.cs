@@ -57,7 +57,6 @@ public class CouponController(ICouponService couponService) : Controller
         if(response is not null && response.IsSuccess)
         {
             CouponDto? model = JsonSerializer.Deserialize<CouponDto>(Convert.ToString(response.Result), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
             return View(model);
         }
         else
@@ -75,6 +74,8 @@ public class CouponController(ICouponService couponService) : Controller
 
         if (response is not null && response.IsSuccess)
         {
+            TempData["success"] = "Coupon deleted successfully";
+
             return RedirectToAction(nameof(CouponIndex));
         }
         else
