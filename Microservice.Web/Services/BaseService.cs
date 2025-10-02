@@ -9,24 +9,32 @@ using static Microservice.Web.Utility.SD;
 
 namespace Microservice.Web.Services;
 
-public class BaseService(IHttpClientFactory httpClientFactory) : IBaseService
+public class BaseService(IHttpClientFactory httpClientFactory, ITokenProvider tokenProvider) : IBaseService
 {
-    public async Task<ResponseDto?> SendAsync(RequestDto requestDto)
+    public async Task<ResponseDto?> SendAsync(RequestDto requestDto, bool withBearer = true)
     {
-        HttpClient client = httpClientFactory.CreateClient();
-
-        HttpRequestMessage message = new();
-
-        message.Headers.Add("Accept", "application/json");
-
-        message.RequestUri = new Uri(client.BaseAddress + requestDto.Url);
-        SetDataToRequest(requestDto, message);
-        SetHttpRequestType(requestDto, message);
-
-        HttpResponseMessage? apiResponse = await client.SendAsync(message);
 
         try
         {
+            HttpClient client = httpClientFactory.CreateClient();
+
+            HttpRequestMessage message = new();
+
+            message.Headers.Add("Accept", "application/json");
+
+            if (withBearer)
+            {
+                var token = tokenProvider.GetToken();
+
+                message.Headers.Add("Authorization", $"Bearer {token}");
+            }
+
+            message.RequestUri = new Uri(client.BaseAddress + requestDto.Url);
+            SetDataToRequest(requestDto, message);
+            SetHttpRequestType(requestDto, message);
+
+            HttpResponseMessage? apiResponse = await client.SendAsync(message);
+
             switch (apiResponse.StatusCode)
             {
                 case HttpStatusCode.NotFound:
@@ -39,7 +47,7 @@ public class BaseService(IHttpClientFactory httpClientFactory) : IBaseService
                     return new() { IsSuccess = false, Message = "Unauthorized" };
                 default:
                     var apiContent = await apiResponse.Content.ReadAsStringAsync();
-                    var apiResponseDto = JsonSerializer.Deserialize<ResponseDto>(apiContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true});
+                    var apiResponseDto = JsonSerializer.Deserialize<ResponseDto>(apiContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                     return apiResponseDto;
             }
         }
