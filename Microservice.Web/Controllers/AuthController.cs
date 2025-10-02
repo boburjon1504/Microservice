@@ -40,7 +40,7 @@ namespace Microservice.Web.Controllers
             }
             else
             {
-                ModelState.AddModelError("CustomError", responseDto?.Message);
+                TempData["error"] = responseDto.Message;
                 return View(model);
             }
         }
@@ -70,7 +70,7 @@ namespace Microservice.Web.Controllers
             var result = await authService.RegisterAsync(model);
             ResponseDto assignRole;
 
-            if(result is not null && result.IsSuccess)
+            if (result is not null && result.IsSuccess)
             {
                 if (string.IsNullOrWhiteSpace(model.Role))
                 {
@@ -79,12 +79,16 @@ namespace Microservice.Web.Controllers
 
                 assignRole = await authService.AssignRoleAsync(model);
 
-                if(assignRole is not null && assignRole.IsSuccess)
+                if (assignRole is not null && assignRole.IsSuccess)
                 {
                     TempData["success"] = "Successfully registered";
 
                     return RedirectToAction(nameof(Login));
                 }
+            }
+            else
+            {
+                TempData["error"] = result.Message;
             }
 
             SetRoles();
@@ -97,7 +101,7 @@ namespace Microservice.Web.Controllers
             await HttpContext.SignOutAsync();
             tokenProvider.ClearToken();
 
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
 
         private async Task SignInUser(LoginResponseDto model)
