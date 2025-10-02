@@ -4,6 +4,7 @@ using Micorservice.CouponApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
 
@@ -12,14 +13,39 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services
-        .AddDbContext<AppDbContext>(option => 
+        .AddDbContext<AppDbContext>(option =>
         option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddAutoMapper(c => c.AddProfile<CouponProfile>());
 
 builder.Services.AddControllers();
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = JwtBearerDefaults.AuthenticationScheme
+                }
+            },
+            new string[]{}
+        }
+    });
+});
 builder.Services.AddEndpointsApiExplorer();
 
 var secret = builder.Configuration.GetValue<string>("ApiSettings:Secret");
@@ -73,7 +99,7 @@ void ApplyMigration()
     {
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        if(dbContext.Database.GetPendingMigrations().Count() > 0)
+        if (dbContext.Database.GetPendingMigrations().Count() > 0)
         {
             dbContext.Database.Migrate();
         }
