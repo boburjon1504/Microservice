@@ -14,16 +14,39 @@ namespace Microservice.Web.Controllers
 
             var response = await productService.GetAllProductsAsync();
 
-            if(response is not null && response.IsSuccess)
+            if (response is not null && response.IsSuccess)
             {
-                products = JsonSerializer.Deserialize<List<ProductDto>>(Convert.ToString(response.Result), new JsonSerializerOptions { PropertyNameCaseInsensitive = true});
+                products = JsonSerializer.Deserialize<List<ProductDto>>(Convert.ToString(response.Result), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             }
             else
             {
                 TempData["error"] = response.Message;
             }
 
-                return View(products);
+            return View(products);
+        }
+
+        public IActionResult ProductCreate()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProductCreate(ProductDto model)
+        {
+            var response = await productService.CreateAsync(model);
+
+            if (response is not null && response.IsSuccess)
+            {
+                TempData["success"] = "Product created successfully";
+
+                return RedirectToAction(nameof(ProductIndex));
+            }
+            else
+            {
+                TempData["error"] = response.Message;
+                return View(model);
+            }
         }
     }
 }
