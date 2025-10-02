@@ -21,7 +21,7 @@ public class ProductService(IBaseService baseService) : IProductService
     {
         return await baseService.SendAsync(new RequestDto
         {
-            ApiType = ApiType.POST,
+            ApiType = ApiType.DELETE,
             Url = SD.ProductApiBase + "api/products/" + id,
         });
     }
@@ -30,7 +30,7 @@ public class ProductService(IBaseService baseService) : IProductService
     {
         return await baseService.SendAsync(new RequestDto
         {
-            ApiType = ApiType.POST,
+            ApiType = ApiType.GET,
             Url = SD.ProductApiBase + "api/products/",
         });
     }
@@ -39,7 +39,7 @@ public class ProductService(IBaseService baseService) : IProductService
     {
         return await baseService.SendAsync(new RequestDto
         {
-            ApiType = ApiType.POST,
+            ApiType = ApiType.GET,
             Url = SD.CouponApiBase + "api/products/" + id,
         });
     }
