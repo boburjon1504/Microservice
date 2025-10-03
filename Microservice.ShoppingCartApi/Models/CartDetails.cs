@@ -17,7 +17,7 @@ public class CartDetails
     public int ProductId {  get; set; }
 
     [NotMapped]
-    public ProductDto Product { get; set; }
+    public ProductDto Product { get; set; } = new();
 
     public int Count { get; set; }
 }

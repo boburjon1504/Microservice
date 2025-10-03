@@ -1,5 +1,7 @@
 using Microservice.ShoppingCartApi.Data;
 using Microservice.ShoppingCartApi.Mappers;
+using Microservice.ShoppingCartApi.Services;
+using Microservice.ShoppingCartApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -12,11 +14,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<IProductService, ProductService>();
+
 builder.Services.AddAutoMapper(o =>
 {
     o.AddProfile<CartHeaderProfile>();
     o.AddProfile<CartDetailsProfile>();
 });
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddHttpClient("Product", c => c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductApi"]));
 
 builder.Services.AddControllers();
 

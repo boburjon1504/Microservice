@@ -9,7 +9,6 @@ namespace Microservice.ProductApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class ProductsController(AppDbContext dbContext, IMapper mapper) : ControllerBase
 {
     private ResponseDto responseDto = new ResponseDto();
@@ -33,7 +32,7 @@ public class ProductsController(AppDbContext dbContext, IMapper mapper) : Contro
         return responseDto;
     }
 
-
+    [Authorize("ADMIN")]
     [HttpPost]
     public async Task<ResponseDto> Create([FromBody] ProductDto productDto, CancellationToken cancellationToken)
     {
@@ -49,6 +48,7 @@ public class ProductsController(AppDbContext dbContext, IMapper mapper) : Contro
     }
 
     [HttpPut]
+    [Authorize("ADMIN")]
     public async Task<ResponseDto> Update([FromBody] ProductDto model)
     {
         var product = mapper.Map<Product>(model);
@@ -62,6 +62,7 @@ public class ProductsController(AppDbContext dbContext, IMapper mapper) : Contro
         return responseDto;
     }
 
+    [Authorize("ADMIN")]
     [HttpDelete("{id:int}")]
     public async Task<ResponseDto> Delete(int id)
     {
