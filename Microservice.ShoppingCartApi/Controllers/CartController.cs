@@ -11,7 +11,7 @@ namespace Microservice.ShoppingCartApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CartController(AppDbContext dbContext, IMapper mapper, IProductService productService) : ControllerBase
+public class CartController(AppDbContext dbContext, IMapper mapper, IProductService productService, ICouponService couponService) : ControllerBase
 {
     private ResponseDto responseDto = new ResponseDto();
 
@@ -93,29 +93,6 @@ public class CartController(AppDbContext dbContext, IMapper mapper, IProductServ
         return responseDto;
     }
 
-    [HttpPost("removecoupon")]
-    public async Task<ResponseDto> RemoveCoupon([FromBody] CartDto model)
-    {
-        try
-        {
-            var cartFromDb = dbContext.CartHeaders.First(c => c.UserId == model.CartHeader.UserId);
-
-            cartFromDb.CouponCode = "";
-
-            dbContext.CartHeaders.Update(cartFromDb);
-            dbContext.SaveChanges();
-
-            responseDto.Result = true;
-        }
-        catch (Exception ex)
-        {
-            responseDto.Message = ex.Message;
-            responseDto.IsSuccess = false;
-        }
-
-        return responseDto;
-    }
-
     [HttpPost("removecart")]
     public async Task<ResponseDto> RemoveCart([FromBody] int cartDetailId, CancellationToken cancellationToken)
     {
@@ -160,6 +137,9 @@ public class CartController(AppDbContext dbContext, IMapper mapper, IProductServ
 
             IEnumerable<ProductDto> products = await productService.GetProducts();
 
+            CouponDto? couponDto = new();
+
+
             foreach (var item in cart.CartDetails)
             {
                 item.Product = products.FirstOrDefault(p => p.Id == item.ProductId);
@@ -167,6 +147,16 @@ public class CartController(AppDbContext dbContext, IMapper mapper, IProductServ
                 cart.CartHeader.CartTotal += (item.Count * item.Product.Price);
             }
 
+            if (!string.IsNullOrWhiteSpace(cartHeader.CouponCode))
+            {
+                couponDto = await couponService.GetCoupon(cartHeader.CouponCode);
+                
+                if(couponDto is not null && cart.CartHeader.CartTotal >= couponDto.MinAmount)
+                {
+                    cart.CartHeader.CartTotal -= couponDto.Discount;
+                    cart.CartHeader.Discount = couponDto.Discount;
+                }
+            }
             responseDto.Result = cart;
 
             return responseDto;
