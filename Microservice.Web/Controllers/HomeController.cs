@@ -1,13 +1,15 @@
 using Microservice.Web.Models;
 using Microservice.Web.Services;
 using Microservice.Web.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 
 namespace Microservice.Web.Controllers
 {
-    public class HomeController(IProductService productService) : Controller
+    public class HomeController(IProductService productService, ICartService cartService) : Controller
     {
         private readonly ILogger<HomeController> _logger;
 
@@ -45,6 +47,45 @@ namespace Microservice.Web.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Details(ProductDto productDto)
+        {
+            CartDto cartDto = new CartDto
+            {
+                CartHeader = new CartHeaderDto
+                {
+                    UserId = User.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Sub)?.Value,
+                }
+            };
+
+            var cartDetails = new CartDetailsDto
+            {
+                Count = productDto.Count,
+                ProductId = productDto.Id,
+            };
+
+            List<CartDetailsDto> cartDetailsDtos = new List<CartDetailsDto> { cartDetails };
+
+            cartDto.CartDetails = cartDetailsDtos;
+
+            ResponseDto? response = await cartService.Upsert(cartDto);
+                
+            if (response is not null && response.IsSuccess)
+            {
+                TempData["success"] = "Item has been added to shopping cart";
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                TempData["error"] = response.Message;
+            }
+
+            return View(productDto);
+
         }
 
         public IActionResult Privacy()
