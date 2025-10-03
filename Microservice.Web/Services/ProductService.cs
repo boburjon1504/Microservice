@@ -40,7 +40,7 @@ public class ProductService(IBaseService baseService) : IProductService
         return await baseService.SendAsync(new RequestDto
         {
             ApiType = ApiType.GET,
-            Url = SD.CouponApiBase + "api/products/" + id,
+            Url = SD.ProductApiBase + "api/products/" + id,
         });
     }
 

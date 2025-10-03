@@ -48,5 +48,40 @@ namespace Microservice.Web.Controllers
                 return View(model);
             }
         }
+
+        public async Task<IActionResult> ProductDelete(int id)
+        {
+            ResponseDto? response = await productService.GetByIdAsync(id);
+
+            if (response is not null && response.IsSuccess)
+            {
+                ProductDto? productDto = JsonSerializer.Deserialize<ProductDto>(Convert.ToString(response.Result), new JsonSerializerOptions { PropertyNameCaseInsensitive = true});
+
+                return View(productDto);
+            }
+            else
+            {
+                TempData["error"] = response.Message;
+                return NotFound();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProductDelete(ProductDto model)
+        {
+            var response = await productService.DeleteAsync(model.Id);
+
+            if (response is not null && response.IsSuccess)
+            {
+                TempData["success"] = "Product deleted successfully";
+
+                return RedirectToAction(nameof(ProductIndex));
+            }
+            else
+            {
+                TempData["error"] = response.Message;
+                return View(model);
+            }
+        }
     }
 }
