@@ -32,7 +32,7 @@ public class ProductsController(AppDbContext dbContext, IMapper mapper) : Contro
         return responseDto;
     }
 
-    [Authorize("ADMIN")]
+    [Authorize(Roles = "ADMIN")]
     [HttpPost]
     public async Task<ResponseDto> Create([FromBody] ProductDto productDto, CancellationToken cancellationToken)
     {
@@ -48,7 +48,7 @@ public class ProductsController(AppDbContext dbContext, IMapper mapper) : Contro
     }
 
     [HttpPut]
-    [Authorize("ADMIN")]
+    [Authorize(Roles = "ADMIN")]
     public async Task<ResponseDto> Update([FromBody] ProductDto model)
     {
         var product = mapper.Map<Product>(model);
@@ -62,7 +62,7 @@ public class ProductsController(AppDbContext dbContext, IMapper mapper) : Contro
         return responseDto;
     }
 
-    [Authorize("ADMIN")]
+    [Authorize(Roles ="ADMIN")]
     [HttpDelete("{id:int}")]
     public async Task<ResponseDto> Delete(int id)
     {

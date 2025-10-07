@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservice.ShoppingCartAp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservice.EmailApi", "Microservice.EmailApi\Microservice.EmailApi.csproj", "{3ECC147A-7A4C-440A-8A42-EEE61CC83D04}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservice.GatewaySolution", "Microservice.GatewaySolution\Microservice.GatewaySolution.csproj", "{32BBF841-AC95-4B0A-95B3-BEB0CA0DB54E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{3ECC147A-7A4C-440A-8A42-EEE61CC83D04}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3ECC147A-7A4C-440A-8A42-EEE61CC83D04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3ECC147A-7A4C-440A-8A42-EEE61CC83D04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32BBF841-AC95-4B0A-95B3-BEB0CA0DB54E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32BBF841-AC95-4B0A-95B3-BEB0CA0DB54E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32BBF841-AC95-4B0A-95B3-BEB0CA0DB54E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32BBF841-AC95-4B0A-95B3-BEB0CA0DB54E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,6 +70,7 @@ Global
 		{268136E8-1F4B-4080-A86C-2C330B842F72} = {55876BCC-CD00-4E7B-AA55-432D9491122F}
 		{D35F737F-49F9-4891-A074-C46D42204DC3} = {55876BCC-CD00-4E7B-AA55-432D9491122F}
 		{3ECC147A-7A4C-440A-8A42-EEE61CC83D04} = {55876BCC-CD00-4E7B-AA55-432D9491122F}
+		{32BBF841-AC95-4B0A-95B3-BEB0CA0DB54E} = {7D5F482B-1A3F-4A40-B86F-99FE3DFCC456}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4603913F-28FE-4AF7-B4D6-9302CAFC77EB}
