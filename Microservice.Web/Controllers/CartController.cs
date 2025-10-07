@@ -16,6 +16,13 @@ namespace Microservice.Web.Controllers
             return View(await GetUserCart());
         }
 
+        [Authorize]
+        public async Task<IActionResult> Checkout()
+        {
+
+            return View(await GetUserCart());
+        }
+
         public async Task<IActionResult> Remove(int cartDetailsId)
         {
             var response = await cartService.RemoveFromCart(cartDetailsId);
