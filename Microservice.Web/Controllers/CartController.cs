@@ -16,13 +16,45 @@ namespace Microservice.Web.Controllers
             return View(await GetUserCart());
         }
 
+        public async Task<IActionResult> Remove(int cartDetailsId)
+        {
+            var response = await cartService.RemoveFromCart(cartDetailsId);
+
+            if (response is not null && response.IsSuccess)
+            {
+                TempData["success"] = "Cart updated successfully";
+            }
+            else
+            {
+                TempData["error"] = response.Message;
+            }
+
+            return RedirectToAction(nameof(CartIndex));
+        }
+
+        public async Task<IActionResult> ApplyCoupon(CartDto cartDto)
+        {
+            var response = await cartService.ApplyCoupon(cartDto);
+
+            if (response is not null && response.IsSuccess)
+            {
+                TempData["success"] = "Cart updated successfully";
+            }
+            else
+            {
+                TempData["error"] = response.Message;
+            }
+
+            return RedirectToAction(nameof(CartIndex));
+        }
+
         private async Task<CartDto> GetUserCart()
         {
             var userId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub).FirstOrDefault()?.Value;
 
             var response = await cartService.GetCart(userId);
-            
-            if(response is not null && response.IsSuccess)
+
+            if (response is not null && response.IsSuccess)
             {
                 var cart = JsonSerializer.Deserialize<CartDto>(Convert.ToString(response.Result), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 

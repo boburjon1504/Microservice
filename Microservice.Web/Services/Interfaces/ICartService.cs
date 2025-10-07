@@ -8,7 +8,7 @@ public interface ICartService
 
     Task<ResponseDto?> Upsert(CartDto cart);
 
-    Task<ResponseDto?> RemoveFromCart(string cartDetailsId);
+    Task<ResponseDto?> RemoveFromCart(int cartDetailsId);
 
     Task<ResponseDto?> ApplyCoupon(CartDto cart);
 }

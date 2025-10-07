@@ -26,7 +26,7 @@ public class CartService(IBaseService baseService) : ICartService
         });
     }
 
-    public async Task<ResponseDto?> RemoveFromCart(string cartDetailsId)
+    public async Task<ResponseDto?> RemoveFromCart(int cartDetailsId)
     {
         return await baseService.SendAsync(new RequestDto
         {
