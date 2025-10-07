@@ -1,4 +1,5 @@
 using Microservice.OrderApi.Data;
+using Microservice.OrderApi.Mappers;
 using Microservice.OrderApi.Services;
 using Microservice.OrderApi.Services.Interfaces;
 using Microservice.OrderApi.Utility;
@@ -17,6 +18,12 @@ builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient("Product", c => c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductApi"]))
             .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
+
+builder.Services.AddAutoMapper(c =>
+{
+    c.AddProfile<OrderDetailsProfile>();
+    c.AddProfile<OrderHeaderProfile>();
+});
 
 builder.Services.AddScoped<IProductService, ProductService>();
 
