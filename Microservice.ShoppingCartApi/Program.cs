@@ -2,6 +2,7 @@ using Microservice.ShoppingCartApi.Data;
 using Microservice.ShoppingCartApi.Mappers;
 using Microservice.ShoppingCartApi.Services;
 using Microservice.ShoppingCartApi.Services.Interfaces;
+using Microservice.ShoppingCartApi.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -22,10 +23,12 @@ builder.Services.AddAutoMapper(o =>
     o.AddProfile<CartHeaderProfile>();
     o.AddProfile<CartDetailsProfile>();
 });
-builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 builder.Services.AddHttpClient("Product", c => c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductApi"]));
-builder.Services.AddHttpClient("Coupon", c => c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponApi"]));
+builder.Services.AddHttpClient("Coupon", c => c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponApi"]))
+        .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
 
 builder.Services.AddControllers();
 

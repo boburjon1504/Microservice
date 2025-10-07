@@ -10,6 +10,7 @@ namespace Micorservice.CouponApi.Controllers;
 
 [Route("api/coupon")]
 [ApiController]
+[Authorize]
 public class CouponApiController(AppDbContext dbContext, IMapper mapper)
     : ControllerBase
 {

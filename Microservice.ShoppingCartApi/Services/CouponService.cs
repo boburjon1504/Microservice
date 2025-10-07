@@ -21,7 +21,7 @@ public class CouponService(IHttpClientFactory httpClientFactory) : ICouponServic
 
         var resp = JsonSerializer.Deserialize<ResponseDto>(apiContent, jsonOptions);
 
-        if (resp.IsSuccess)
+        if (resp is not null && resp.IsSuccess)
         {
             var couponDto = JsonSerializer.Deserialize<CouponDto>(Convert.ToString(resp.Result), jsonOptions);
 
