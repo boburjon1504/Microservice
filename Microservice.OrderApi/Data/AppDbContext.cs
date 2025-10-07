@@ -1,7 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microservice.OrderApi.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace Microservice.ProductApi.Data;
+namespace Microservice.OrderApi.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
+    public DbSet<OrderHeader> OrderHeaders { get; set; }
+
+    public DbSet<OrderDetails> OrderDetails { get; set; }
 }

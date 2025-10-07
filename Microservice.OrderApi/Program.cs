@@ -1,4 +1,7 @@
-using Microservice.ProductApi.Data;
+using Microservice.OrderApi.Data;
+using Microservice.OrderApi.Services;
+using Microservice.OrderApi.Services.Interfaces;
+using Microservice.OrderApi.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -10,6 +13,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddDbContext<AppDbContext>(c => c.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient("Product", c => c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductApi"]))
+            .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
+
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddControllers();
 
@@ -69,7 +78,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger().UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
